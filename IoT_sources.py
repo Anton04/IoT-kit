@@ -22,7 +22,7 @@ class Basics():
         if UUID != None:
             self.UUID = UUID
         else:
-            self.UUID = uuid.uuid1()
+            self.UUID = str(uuid.uuid1())
 
         return
 
@@ -55,18 +55,30 @@ class Source(Basics):
         self.url = url
         self.realtime = False
 
+        #Parse the url and add defaults if necessary.
+        try:
+            o = urlparse.urlparse(self.url)
+        except:
+            raise Exception("Incorrect url for source.")
+
+        self.s_type = o.scheme
+        self.s_hostname = o.hostname
+        self.s_port = o.port
+        self.s_username = o.username
+        self.s_password = o.password
+        self.s_path = o.path
+        self.s_params = o.params
+
+
         return
 
     def to_dict(self):
 
-        config = Source.to_dict(self)
+        config = Basics.to_dict(self)
 
         config["class"] = self.__class__.__name__
 
-        config["url"] = url
-        config["user"] = user
-        config["passwd"] = passwd
-
+        config["url"] = self.url
 
         return config
 
@@ -77,59 +89,29 @@ class Source(Basics):
 
 #InfluxDB
 class InfluxSource(Source,InfluxDBClient):
-    def __init__(self,Name=None,UUID=None,url="localhost/test",user="root",passwd="root"):
-        Source.__init__(self,Name,UUID,url,user,passwd)
+    def __init__(self,Name=None,UUID=None,url="mqtt://root:root@localhost:8086/test"):
 
+        Source.__init__(self,Name,UUID,url)
 
-        #Parse the url and add defaults if necessary.
-        o = urlparse.urlparse(self.url)
+        if self.s_hostname == None:
+            self.s_hostname = "localhost"
 
-        if o.hostname == None:
-            hostname = "localhost"
-        else:
-            hostname = o.hostname
+        if self.s_port == None:
+            self.s_port = 8086
 
-        if o.port == None:
-            port = 8086
-        else:
-            port = o.port
+        if self.s_username == None:
+            self.s_username = "root"
 
-        if o.username == None:
-            username = "root"
-        else:
-            username = o.username
+        if self.s_password == None:
+            self.s_password = "root"
 
-        if o.password == None:
-            password = "root"
-        else:
-            password = o.password
+        if self.s_path == None:
+            self.s_path = "default"
 
-        if o.path == None:
-            db = "default"
-        else:
-            db = o.path.strip("/")
+        self.s_db = self.s_path.strip("/")
 
         #init database instance.
-        InfluxDBClient.__init__(self,hostname,port,username,password,db)
-
-    def spliturl(self,url):
-
-        #Remove http:// of any
-        url = re.sub("http://","",url)
-
-        list = url.split("/")
-
-        if len(list) != 2:
-            raise Exception("Incorrect url for influxdb source.")
-
-        if list[0].find(":") == -1:
-            port = 8086
-            hostname = list[0]
-        else:
-            parts = list[0].split(":")
-            hostname = parts[0]
-
-        return (hostname,list[1],port)
+        InfluxDBClient.__init__(self,self.s_hostname,self.s_port,self.s_username,self.s_password,self.s_db)
 
     def to_dict(self):
 
