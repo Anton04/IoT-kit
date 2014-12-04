@@ -1,0 +1,16 @@
+{
+  "Name":"Solstaden",
+  "ID":"3306a91a-d5af-4126-b873-49f0e38e4974",
+  "LTS TYPE":"InfluxDB",
+  "LTS DATA":
+    {
+        "host":"livinglab2.powerprojects.se",
+         "port":8086,
+         "user":"uploader",
+         "password":"",
+         "databases":["by-id"]
+    },
+  "RTS TYPE":"MQTT",
+  "RTS DATA":{},
+  "FEEDS":"Feeds.json"
+}
