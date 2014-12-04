@@ -1,34 +1,11 @@
 #!/bin/python
-#from pubsub import pub
+from pubsub import pub
 import json
 import mosquitto 
 from InfluxDBInterface import InfluxDBInterface
 import pandas as pd
 import uuid
-
-#Abstraction layer for accessing long time storage
-class LTSInterface():
-  def __init__(self):
-    return
-    
-#Abstraction layer for accessing realtime system    
-class RTSInterface():
-  def __init__(self):
-    return
-
-#Abstraction layer for accessing a feed repository    
-class REPInterface():
-  def __init__(self):
-    return
-
-
-    
-#Class implementing access to MQTT via mosquitto    
-class Mosquitto_RTSLink(RTSInterface):
-  def __init__(self):
-    return
-  
-  
+import IoT_sources
 
 
 #Class implementing a feed universe defined by feed definitions a realtime data access and longterm strorage.
