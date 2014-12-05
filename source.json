@@ -1,0 +1,6 @@
+{
+    "url": "mqtt://root:root@localhost:8086/test", 
+    "class": "InfluxSource", 
+    "Name": "Nameless", 
+    "UUID": "ad174951-7bf4-11e4-b91d-6c400892f89e"
+}
